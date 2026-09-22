@@ -1,0 +1,37 @@
+# Local Python environment and generated files
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.env
+.env.*
+!.env.example
+
+# Runtime configuration, OCR models, analysis and exports
+**/data/
+**/결과/
+**/추출결과/
+**/검증결과/
+.models/
+*.pth
+*.pt
+*.onnx
+*.npz
+*.log
+*.tmp
+*.lnk
+
+# Personal videos and project files should stay outside the repository
+*.mp4
+*.mkv
+*.mov
+*.avi
+*.webm
+*.mp3
+*.wav
+*.zip
+Thumbs.db
+.DS_Store

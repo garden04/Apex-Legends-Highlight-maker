@@ -1,0 +1,25 @@
+{
+  "sample_fps": 2.0,
+  "before": 6.5,
+  "after": 1.0,
+  "merge_gap": 3.0,
+  "confidence": 0.8,
+  "roi": [
+    0.38,
+    0.69,
+    0.75,
+    0.78
+  ],
+  "mode": "knock",
+  "detector": "template",
+  "language": "ko",
+  "audio_fast": false,
+  "audio_threshold_db": -24.0,
+  "audio_padding": 3.0,
+  "templates": [
+    {
+      "kind": "knock",
+      "path": "assets/knockdown_ko.png"
+    }
+  ]
+}
