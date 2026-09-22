@@ -44,8 +44,12 @@ class Cancelled(Exception): pass
 def check(cancel):
     if cancel.is_set(): raise Cancelled()
 
+BUNDLED_TESSERACT = Path(__file__).resolve().parents[2] / 'tools' / 'tesseract' / 'tesseract.exe'
+
 def tesseract_path():
-    return os.environ.get('TESSERACT_CMD') or shutil.which('tesseract') or 'C:/Program Files/Tesseract-OCR/tesseract.exe'
+    if os.environ.get('TESSERACT_CMD'): return os.environ['TESSERACT_CMD']
+    if BUNDLED_TESSERACT.is_file(): return str(BUNDLED_TESSERACT)
+    return shutil.which('tesseract') or 'C:/Program Files/Tesseract-OCR/tesseract.exe'
 
 @dataclass
 class Options:

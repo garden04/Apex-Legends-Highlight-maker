@@ -56,7 +56,38 @@ FFmpeg 실행 파일은 `imageio-ffmpeg` 패키지에 포함됩니다. 기본 �
 
 > 개발 PC 환경에서 편집기 기동과 분석 연동을 확인했습니다. 새 PC에서 설치 과정 전체를 검증한 상태는 아닙니다.
 
-## 설치 및 실행
+## 간편 실행 — 포터블 버전 (권장)
+
+Python이나 Tesseract를 따로 설치할 필요가 없습니다.
+
+1. [Releases](../../releases)에서 `ApexHighlights-portable.zip`을 내려받습니다.
+2. 쓰기 권한이 있는 폴더(예: 문서, 바탕화면)에 압축을 풉니다. `Program Files` 아래에는 풀지 마세요.
+3. **`ApexHighlights.exe`**를 실행합니다.
+
+포터블 버전에는 python.org 공식 Python 3.12 런타임, 필요한 패키지, EasyOCR 모델, Tesseract OCR(영어 데이터)이 들어 있습니다. 배포본은 네이티브 EXE 실행기를 사용하며 CMD 실행 파일은 제공하지 않습니다. EXE만 옮기지 말고 폴더 전체를 유지하세요. 포터블 실행기는 포함된 Python으로 앱을 실행하며, 설치나 다운로드를 수행하지 않습니다.
+
+### 백신 탐지와 배포 파일 확인
+
+Windows의 인터넷 다운로드 경고와 `Trojan:...` 같은 악성코드 탐지는 서로 다릅니다. 악성코드가 탐지되면 실행을 중단하고 Windows 보안의 **보호 기록 → 영향받는 항목**에서 정확한 파일을 확인하세요. 탐지명만으로 오탐을 단정할 수 없으며, 백신을 끄거나 예외를 등록하도록 안내하지 않습니다. 파일을 검토한 뒤 오탐이 의심되면 [Microsoft 분석 요청](https://www.microsoft.com/en-us/wdsi/filesubmission)을 이용할 수 있습니다.
+
+빌드 시 `ApexHighlights-portable.zip.sha256`도 생성됩니다. ZIP과 함께 Releases에 게시하고, 내려받은 파일은 PowerShell에서 아래 명령으로 해시를 비교할 수 있습니다. 해시 일치는 게시된 파일과의 동일성을 확인하며, 악성코드가 없다는 보증은 아닙니다.
+
+```powershell
+Get-FileHash ./ApexHighlights-portable.zip -Algorithm SHA256
+Get-Content ./ApexHighlights-portable.zip.sha256
+```
+
+### 포터블 버전 만들기
+
+Tesseract가 설치된 Windows PC에서 다음 명령으로 빌드합니다. 빌드에는 Python 3.12와 MinGW-w64 C++ 컴파일러(예: w64devkit)가 필요합니다. 컴파일러의 `bin` 폴더를 PATH에 추가해 `g++ --version`이 실행되도록 준비하세요. 사용자의 PC에는 컴파일러가 필요 없습니다. 빌드 결과는 `build/ApexHighlights/` 폴더와 `dist/ApexHighlights-portable.zip`에 생성됩니다.
+
+```powershell
+py build_portable.py
+```
+
+Tesseract가 기본 경로(`C:/Program Files/Tesseract-OCR`)가 아닌 곳에 설치되어 있다면 `--tesseract-dir`로 위치를 지정합니다. 빌드 결과는 저장소에 커밋하지 말고 Releases에 업로드하세요.
+
+## 소스에서 설치 및 실행
 
 ### 1. 소스 받기
 
@@ -64,17 +95,22 @@ FFmpeg 실행 파일은 `imageio-ffmpeg` 패키지에 포함됩니다. 기본 �
 
 ### 2. 실행 환경 설치
 
-Python 3.12를 설치한 뒤 **`Setup.cmd`**를 실행합니다. 설치 과정은 다음과 같습니다.
+Python 3.12를 설치한 뒤 아래 명령을 실행합니다.
+
+```powershell
+py -3.12 install.py
+```
+
+설치 과정은 다음과 같습니다.
 
 1. 저장소 안에 `.venv` 가상환경 생성
 2. `requirements.txt`의 패키지 설치
 3. EasyOCR 모델 다운로드
-4. `Start-ApexHighlights.lnk` 실행 바로가기 생성
 
-모델 다운로드를 나중에 진행하려면 PowerShell에서 다음과 같이 설치합니다.
+모델 다운로드를 나중에 진행하려면 다음과 같이 설치합니다.
 
 ```powershell
-./setup.ps1 -SkipModels
+py -3.12 install.py --skip-models
 ```
 
 나중에 OCR 모델을 준비할 때는 다음 명령을 사용합니다.
@@ -95,13 +131,13 @@ C:/Program Files/Tesseract-OCR/tesseract.exe
 
 ### 4. 프로그램 실행
 
-**`Start-ApexHighlights.lnk`**를 실행합니다. 프로그램 실행 시 콘솔 창은 표시하지 않습니다. PowerShell에서 직접 실행할 수도 있습니다.
+PowerShell에서 아래 명령을 실행합니다. 프로그램은 별도의 콘솔 창 없이 실행됩니다.
 
 ```powershell
 ./.venv/Scripts/pythonw.exe launch.pyw
 ```
 
-폴더를 옮긴 뒤 바로가기가 작동하지 않으면 새 위치에서 실행 환경을 다시 설치하세요. Python 가상환경은 이동 가능한 배포 파일이 아닙니다.
+폴더를 옮긴 뒤 실행되지 않으면 새 위치에서 실행 환경을 다시 설치하세요. Python 가상환경은 이동 가능한 배포 파일이 아닙니다.
 
 ## 사용 방법
 
@@ -214,13 +250,15 @@ OCR 모델은 사용자 EasyOCR 캐시 또는 앱의 분석 데이터 폴더에 
 │       ├── damage_filter.py     # 데미지 OCR과 구간 판정
 │       └── preview.py           # 미리보기 재생
 ├── launch.pyw                   # 콘솔 없는 실행 진입점
+├── install.py                   # 가상환경·의존성·모델 설치
+├── build_portable.py            # 포터블 배포 zip 빌드
 ├── prepare_models.py            # OCR 모델 준비
 ├── requirements.txt             # Python 의존성
-├── Setup.cmd
-├── setup.ps1                    # 설치와 바로가기 생성
+├── build_launcher.py            # 네이티브 EXE 실행기 빌드
+├── launcher/launcher.cpp        # 실행기 소스
 └── .gitignore
 ```
 
 주요 기술은 Python, PySide6, FFmpeg, OpenCV, Tesseract, EasyOCR/PyTorch입니다. 이 저장소에는 편집 프로그램과 실행에 필요한 자산만 포함합니다. 원본 영상, 개인 설정, 분석 결과, 가상환경, OCR 모델 및 개발용 실험 도구는 포함하지 않습니다.
 
-개인 영상과 편집 프로젝트는 저장소 밖에 저장하세요. `.gitignore`는 실행 중 생성되는 캐시·결과·모델·로그와 로컬 실행 바로가기 등을 제외하도록 구성되어 있습니다.
+개인 영상과 편집 프로젝트는 저장소 밖에 저장하세요. `.gitignore`는 실행 중 생성되는 캐시·결과·모델·로그 등을 제외하도록 구성되어 있습니다.

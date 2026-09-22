@@ -20,5 +20,5 @@ except Exception:
     except OSError:
         pass
     ctypes.windll.user32.MessageBoxW(
-        0, '앱을 실행하지 못했습니다. Setup.cmd로 실행 환경을 설치해 주세요.\n'
+        0, '앱을 실행하지 못했습니다.\n'
         '자세한 내용은 data/startup_error.txt에 기록됩니다.', 'Apex Highlights', 0x10)

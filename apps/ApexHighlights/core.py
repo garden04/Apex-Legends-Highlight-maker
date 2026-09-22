@@ -503,8 +503,9 @@ class Analyzer:
         if use_ocr and (self.reader is None or self.language != settings.language):
             progress(0, "문자 인식 준비 중 · 첫 실행에는 인식 모델을 내려받습니다")
             import easyocr
+            # Same model cache as prepare_models.py and damage_filter (EASYOCR_MODULE_PATH or ~/.EasyOCR).
             self.reader = easyocr.Reader(["ko", "en"] if settings.language == "ko" else ["en"], gpu=False,
-                model_storage_directory=str(self.data_dir / "models"), verbose=False)
+                verbose=False)
             self.language = settings.language
         patterns = []
         if settings.detector in ("template", "both"):
